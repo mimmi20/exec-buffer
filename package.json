@@ -33,7 +33,7 @@
 		"ava": "*",
 		"gifsicle": "^7.0.1",
 		"is-gif": "^4.0.1",
-		"path-exists": "^3.0.0",
+		"path-exists": "^5.0.0",
 		"xo": "*"
 	}
 }
