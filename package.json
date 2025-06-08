@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"ava": "*",
 		"gifsicle": "^3.0.4",
-		"is-gif": "^1.0.0",
+		"is-gif": "^4.0.1",
 		"path-exists": "^3.0.0",
 		"xo": "*"
 	}
