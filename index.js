@@ -1,17 +1,16 @@
-'use strict';
-const fs = require('fs');
-const execa = require('execa');
-const pFinally = require('p-finally');
-const pify = require('pify');
-const rimraf = require('rimraf');
-const tempfile = require('tempfile');
+import fs from 'node:fs';
+import { execa } from 'execa';
+import pFinally from 'p-finally';
+import pify from 'pify';
+import { rimraf } from 'rimraf'
+import tempfile from 'tempfile';
 
 const fsP = pify(fs);
 const rmP = pify(rimraf);
-const input = Symbol('inputPath');
-const output = Symbol('outputPath');
+export const input = Symbol('inputPath');
+export const output = Symbol('outputPath');
 
-module.exports = opts => {
+const func = async opts => {
 	opts = Object.assign({}, opts);
 
 	if (!Buffer.isBuffer(opts.input)) {
@@ -41,5 +40,4 @@ module.exports = opts => {
 	]));
 };
 
-module.exports.input = input;
-module.exports.output = output;
+export default func;

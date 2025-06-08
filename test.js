@@ -1,14 +1,18 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import gifsicle from 'gifsicle';
 import isGif from 'is-gif';
-import pathExists from 'path-exists';
+import { pathExists } from 'path-exists'
 import pify from 'pify';
 import test from 'ava';
-import m from './';
+import m from './index.js';
+import { fileURLToPath } from 'node:url';
 
-test('set temporary directories', t => {
-	const {input, output} = m;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+test('set temporary directories', async t => {
+	const {input, output} = await m;
 	t.truthy(input);
 	t.truthy(output);
 });
@@ -27,7 +31,7 @@ test('return a optimized buffer', async t => {
 
 test('remove temporary files', async t => {
 	const buf = await pify(fs.readFile)(path.join(__dirname, 'fixture.gif'));
-	const err = await t.throws(m({
+	const err = await t.throws(await m({
 		input: buf,
 		bin: 'foobarunicorn',
 		args: [m.output, m.input]
