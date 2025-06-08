@@ -25,7 +25,7 @@
 	"dependencies": {
 		"execa": "^9.6.0",
 		"p-finally": "^1.0.0",
-		"pify": "^3.0.0",
+		"pify": "^6.1.0",
 		"rimraf": "^2.5.4",
 		"tempfile": "^5.0.0"
 	},
