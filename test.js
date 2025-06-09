@@ -44,7 +44,6 @@ test('remove temporary files', async t => {
 		});
 		t.pass();
 	} catch (err) {
-		console.log(err);
 		t.is(err.code, 'ENOENT');
 
 		if (err.cause instanceof Error) {
