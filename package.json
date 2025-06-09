@@ -35,5 +35,6 @@
 		"path-exists": "^5.0.0",
 		"xo": "^1.1.0"
 	},
-	"type": "module"
+	"type": "module",
+	"exports": "./index.js"
 }
