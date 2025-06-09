@@ -46,7 +46,10 @@ test('remove temporary files', async t => {
 	} catch (err) {
 		console.log(err);
 		t.is(err.code, 'ENOENT');
-		// t.false(await pathExists(err.spawnargs[0]));
-		// t.false(await pathExists(err.spawnargs[1]));
+
+		if (err.cause instanceof Error) {
+			t.false(await pathExists(err.cause.spawnargs[0]));
+			t.false(await pathExists(err.cause.spawnargs[1]));
+		}
 	}
 });
