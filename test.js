@@ -42,11 +42,11 @@ test('remove temporary files', async t => {
 			bin: 'foobarunicorn',
 			args: [output, input]
 		});
+		t.pass();
 	} catch (err) {
 		console.log(err);
 		t.is(err.code, 'ENOENT');
+		t.false(await pathExists(err.spawnargs[0]));
+		t.false(await pathExists(err.spawnargs[1]));
 	}
-
-	t.false(await pathExists(err.spawnargs[0]));
-	t.false(await pathExists(err.spawnargs[1]));
 });
