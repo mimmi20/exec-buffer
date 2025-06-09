@@ -1,12 +1,9 @@
-import fs from 'node:fs';
+import { writeFile, readFile } from 'node:fs/promises';
 import { execa } from 'execa';
 import pFinally from 'p-finally';
-import pify from 'pify';
 import { rimraf } from 'rimraf'
 import tempfile from 'tempfile';
 
-const fsP = pify(fs);
-const rmP = pify(rimraf);
 export const input = Symbol('inputPath');
 export const output = Symbol('outputPath');
 
@@ -28,15 +25,17 @@ const func = async opts => {
 	const inputPath = opts.inputPath || tempfile();
 	const outputPath = opts.outputPath || tempfile();
 
-	opts.args = opts.args.map(x => x === input ? inputPath : x === output ? outputPath : x);
+	opts.args = opts.args.map(function (x) {
+		return x === input ? inputPath : x === output ? outputPath : x;
+	});
 
-	const promise = fsP.writeFile(inputPath, opts.input)
+	const promise = writeFile(inputPath, opts.input)
 		.then(() => execa(opts.bin, opts.args))
-		.then(() => fsP.readFile(outputPath));
+		.then(() => readFile(outputPath));
 
 	return pFinally(promise, () => Promise.all([
-		rmP(inputPath),
-		rmP(outputPath)
+		rimraf(inputPath),
+		rimraf(outputPath)
 	]));
 };
 
