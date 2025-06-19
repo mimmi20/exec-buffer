@@ -2,13 +2,11 @@
 
 > Run a Buffer through a child process
 
-
 ## Install
 
+```shell
+npm install exec-buffer
 ```
-$ npm install exec-buffer
-```
-
 
 ## Usage
 
@@ -18,15 +16,14 @@ const execBuffer = require('exec-buffer');
 const gifsicle = require('gifsicle').path;
 
 execBuffer({
-	input: fs.readFileSync('test.gif'),
-	bin: gifsicle,
-	args: ['-o', execBuffer.output, execBuffer.input]
+  input: fs.readFileSync('test.gif'),
+  bin: gifsicle,
+  args: ['-o', execBuffer.output, execBuffer.input]
 }).then(data => {
-	console.log(data);
-	//=> <Buffer 47 49 46 38 37 61 ...>
+  console.log(data);
+  //=> <Buffer 47 49 46 38 37 61 ...>
 });
 ```
-
 
 ## API
 
@@ -75,7 +72,6 @@ Returns a temporary path to where the input file will be written.
 ### execBuffer.output
 
 Returns a temporary path to where the output file will be written.
-
 
 ## License
 
