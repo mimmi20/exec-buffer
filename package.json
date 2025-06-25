@@ -10,7 +10,7 @@
 		"url": "https://github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=20"
 	},
 	"scripts": {
 		"test": "ava"
@@ -30,10 +30,9 @@
 	},
 	"devDependencies": {
 		"ava": "^6.4.0",
-		"gifsicle": "github:mimmi20/gifsicle-bin#master",
+		"gifsicle": "^7.0.1",
 		"is-gif": "^4.0.1",
-		"path-exists": "^5.0.0",
-		"xo": "^1.1.0"
+		"path-exists": "^5.0.0"
 	},
 	"type": "module",
 	"exports": "./index.js"
