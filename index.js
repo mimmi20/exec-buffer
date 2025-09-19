@@ -1,11 +1,26 @@
 import { writeFile, readFile } from 'node:fs/promises';
 import { execa } from 'execa';
-import pFinally from 'p-finally';
 import { rimraf } from 'rimraf'
 import tempfile from 'tempfile';
 
 export const input = Symbol('inputPath');
 export const output = Symbol('outputPath');
+
+const pFinally = async function(
+  promise,
+  onFinally = (() => {})
+) {
+  let value;
+  try {
+    value = await promise;
+  } catch (error) {
+    await onFinally();
+    throw error;
+  }
+
+  await onFinally();
+  return value;
+};
 
 const func = async opts => {
 	opts = Object.assign({}, opts);
