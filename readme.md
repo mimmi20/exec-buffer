@@ -53,14 +53,16 @@ Arguments to run the binary with.
 
 ##### inputPath
 
-Type: `string`<br>
+Type: `string`
+
 Default: `tempfile()`
 
 Where `input` will be written to. In most cases you don't need to set this.
 
 ##### outputPath
 
-Type: `string`<br>
+Type: `string`
+
 Default: `tempfile()`
 
 Where output file will be written to. In most cases you don't need to set this.
