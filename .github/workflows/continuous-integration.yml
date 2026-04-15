@@ -1,0 +1,171 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+# file-version: 1.0
+
+name: "Continuous Integration"
+
+on:
+  - pull_request
+  - push
+
+permissions:
+  contents: read
+  security-events: read
+  issues: read
+  pull-requests: read
+  checks: read
+
+concurrency:
+  group: "${{ github.event_name }}-${{ github.workflow }}-${{ github.head_ref || github.run_id }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  validate-all:
+    name: "Validate Project"
+
+    uses: "mimmi20/ci/.github/workflows/validate-all.yml@master"
+    with:
+      skip-validate-yaml: false
+      skip-validate-md: false
+
+  install:
+    name: "Install Project"
+
+    needs:
+      - "validate-all"
+
+    uses: "mimmi20/ci/.github/workflows/install-node.yml@master"
+    with:
+      skip-nasm-install: true
+      skip-libimagequant-install: true
+      skip-libpng-install: true
+      skip-librabbitmq-install: true
+      skip-libgif-install: true
+
+  analytics:
+    name: "Project Analysis"
+
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      issues: read
+      pull-requests: read
+      checks: read
+
+    needs: "install"
+
+    uses: "mimmi20/ci/.github/workflows/analytics-node.yml@master"
+    with:
+      skip-eslint: false
+      skip-stylelint: true
+      skip-prettier: false
+      skip-nasm-install: true
+      skip-libimagequant-install: true
+      skip-libpng-install: true
+      skip-librabbitmq-install: true
+      skip-libgif-install: true
+      skip-oxlint: true
+
+  tests:
+    name: "Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }}"
+
+    needs:
+      - "analytics"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - "22"
+          - "24"
+          - "25"
+        operating-system:
+          - "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v6"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+
+      - name: "Use Node.js ${{ matrix.node-version }}"
+        uses: "actions/setup-node@v6"
+        with:
+          node-version: "${{ matrix.node-version }}"
+
+      - name: "install dependencies"
+        run: "npm install"
+
+      - name: "run tests"
+        run: "npm test"
+
+#  build-with-vite:
+#    name: "Build with vite"
+#
+#    needs: "tests"
+#
+#    runs-on: "${{ matrix.operating-system }}"
+#
+#    timeout-minutes: 10
+#
+#    continue-on-error: false
+#
+#    strategy:
+#      fail-fast: false
+#
+#      matrix:
+#        operating-system:
+#          - "ubuntu-latest"
+#
+#        node-version:
+#          - "22"
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: "actions/checkout@v4"
+#        with:
+#          # Disabling shallow clone is recommended for improving relevancy of reporting
+#          fetch-depth: 0
+#          lfs: false
+#          persist-credentials: false
+#
+#      - name: "install libimagequant-dev"
+#        run: "sudo apt-get install libimagequant-dev -y"
+#
+#      - name: "Use Node.js ${{ matrix.node-version }}"
+#        uses: "actions/setup-node@v4"
+#        with:
+#          node-version: "${{ matrix.node-version }}"
+#
+#      - name: "install dependencies"
+#        run: "npm install"
+#
+#      - name: "build"
+#        run: "npm run build"
+
+  # This is a meta job to avoid to have to constantly change the protection rules
+  # whenever we touch the matrix.
+  tests-status:
+    name: "CI Status"
+
+    runs-on: "ubuntu-latest"
+
+    if: always()
+
+    needs:
+      - "tests"
+
+    steps:
+      - name: Failing run
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'skipped') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
+
+      - name: Successful run
+        if: ${{ !(contains(needs.*.result, 'failure')) && !(contains(needs.*.result, 'skipped')) && !(contains(needs.*.result, 'cancelled')) }}
+        run: exit 0
