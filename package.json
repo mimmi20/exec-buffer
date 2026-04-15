@@ -28,7 +28,7 @@
 		"tempfile": "^5.0.0"
 	},
 	"devDependencies": {
-		"ava": "^6.4.1",
+		"ava": "^7.0.0",
 		"gifsicle": "^7.0.1",
 		"is-gif": "^4.0.1",
 		"path-exists": "^5.0.0"
