@@ -35,6 +35,14 @@ updates:
       include: "scope"
       prefix: "npm (master)"
 
+    ignore:
+      - dependency-name: "@eslint/js"
+        versions: [ ">=10.0.0" ]
+      - dependency-name: "eslint"
+        versions: [ ">=10.0.0" ]
+      - dependency-name: "ava"
+        versions: [ ">=7.0.0" ]
+
     # Disable rebasing for all pull requests
     rebase-strategy: "disabled"
 
