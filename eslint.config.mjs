@@ -384,7 +384,12 @@ export default tseslint.config(
       depend,
     },
     rules: {
-      'depend/ban-dependencies': 'error',
+      'depend/ban-dependencies': [
+        'error',
+        {
+          presets: ['native', 'microutilities', 'preferred'],
+        },
+      ],
     },
   },
   {
