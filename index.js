@@ -1,7 +1,6 @@
-import { writeFile, readFile } from 'node:fs/promises';
-import { execa } from 'execa';
-import { rimraf } from 'rimraf';
+import { writeFile, readFile, rm } from 'node:fs/promises';
 import tempfile from 'tempfile';
+import exec from 'nanoexec';
 
 export const input = Symbol('inputPath');
 export const output = Symbol('outputPath');
@@ -40,10 +39,10 @@ const func = async (opts) => {
   opts.args = opts.args.map((x) => (x === input ? inputPath : x === output ? outputPath : x));
 
   const promise = writeFile(inputPath, opts.input)
-    .then(() => execa(opts.bin, opts.args))
+    .then(() => exec(opts.bin, opts.args))
     .then(() => readFile(outputPath));
 
-  return pFinally(promise, () => Promise.all([rimraf(inputPath), rimraf(outputPath)]));
+  return pFinally(promise, () => Promise.all([rm(inputPath, { recursive: true, force: true }), rm(outputPath, { recursive: true, force: true })]));
 };
 
 export default func;

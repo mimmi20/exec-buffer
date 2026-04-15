@@ -4,12 +4,16 @@ import prettierConfig from 'eslint-config-prettier';
 import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 import pluginPromise from 'eslint-plugin-promise';
+import depend from 'eslint-plugin-depend';
+import { importX } from 'eslint-plugin-import-x';
 
 export default tseslint.config(
   eslint.configs.recommended,
   prettierConfig,
   ...tseslint.configs.recommended,
   pluginPromise.configs['flat/recommended'],
+  importX.flatConfigs.recommended,
+  importX.flatConfigs.typescript,
   {
     rules: {
       'for-direction': 'error',
@@ -307,6 +311,8 @@ export default tseslint.config(
       'prefer-spread': 'error',
       'require-yield': 'error',
       'symbol-description': 'error',
+      'import-x/no-dynamic-require': 'warn',
+      'import-x/no-nodejs-modules': 'warn',
     },
     languageOptions: {
       globals: {
@@ -371,6 +377,19 @@ export default tseslint.config(
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
       reportUnusedInlineConfigs: 'error',
+    },
+  },
+  {
+    plugins: {
+      depend,
+    },
+    rules: {
+      'depend/ban-dependencies': [
+        'error',
+        {
+          presets: ['native', 'microutilities', 'preferred'],
+        },
+      ],
     },
   },
   {
