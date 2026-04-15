@@ -1,8 +1,7 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import gifsicle from 'gifsicle';
 import isGif from 'is-gif';
-import { pathExists } from 'path-exists';
 import test from 'ava';
 import m, { input, output } from './index.js';
 import { fileURLToPath } from 'node:url';
@@ -47,8 +46,18 @@ test('remove temporary files', async (t) => {
     t.is(err.code, 'ENOENT');
 
     if (err.cause instanceof Error) {
-      t.false(await pathExists(err.cause.spawnargs[0]));
-      t.false(await pathExists(err.cause.spawnargs[1]));
+      t.false(
+        await access(err.cause.spawnargs[0]).then(
+          () => true,
+          () => false
+        )
+      );
+      t.false(
+        await access(err.cause.spawnargs[1]).then(
+          () => true,
+          () => false
+        )
+      );
     }
   }
 });
