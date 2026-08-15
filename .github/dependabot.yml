@@ -42,6 +42,8 @@ updates:
         versions: [ ">=10.0.0" ]
       - dependency-name: "ava"
         versions: [ ">=7.0.0" ]
+      - dependency-name: "typescript"
+        versions: [ ">=7.0.0" ]
 
     # Disable rebasing for all pull requests
     rebase-strategy: "disabled"
